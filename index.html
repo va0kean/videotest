@@ -1,1 +1,538 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIDEOTEST - Сравнение видеохостингов</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Слайдер */
+        .video-slider-container {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+        }
+
+        .video-slider {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: #000;
+        }
+
+        .video-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-slide.active {
+            opacity: 1;
+        }
+
+        .video-slide video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .video-slide iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .slider-controls {
+            position: absolute;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 10;
+        }
+
+        .slider-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1e3c72;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 28px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .slider-btn:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        /* Миниатюры */
+        .video-thumbnails {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 30px 20px;
+            background: white;
+            flex-wrap: wrap;
+        }
+
+        .thumbnail {
+            width: 180px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .thumbnail:hover {
+            transform: translateY(-5px);
+        }
+
+        .thumbnail-video {
+            width: 100%;
+            height: 120px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 4px solid transparent;
+            transition: all 0.3s;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .thumbnail.active .thumbnail-video {
+            border-color: #1e3c72;
+            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+        }
+
+        .thumbnail-video video,
+        .thumbnail-video iframe {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .thumbnail-label {
+            margin-top: 10px;
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #1e3c72;
+        }
+
+        .thumbnail.active .thumbnail-label {
+            color: #2a5298;
+        }
+
+        /* Таблица оценок */
+        .rating-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .rating-section h2 {
+            color: #1e3c72;
+            margin-bottom: 30px;
+            font-size: 2em;
+            text-align: center;
+            border-bottom: 3px solid #1e3c72;
+            padding-bottom: 15px;
+        }
+
+        .rating-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .rating-row {
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .rating-row:last-child {
+            border-bottom: none;
+        }
+
+        .service-name {
+            padding: 20px;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #1e3c72;
+            width: 200px;
+        }
+
+        .stars-container {
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .star {
+            font-size: 2em;
+            cursor: pointer;
+            color: #ddd;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffd700;
+            transform: scale(1.2);
+        }
+
+        .star.active {
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .average-rating {
+            padding: 20px;
+            text-align: right;
+            font-size: 1.2em;
+            color: #2a5298;
+            font-weight: 600;
+            width: 150px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .video-slider {
+                height: 400px;
+            }
+
+            .thumbnail {
+                width: 140px;
+            }
+
+            .thumbnail-video {
+                height: 90px;
+            }
+
+            .slider-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+
+            .rating-section {
+                padding: 20px;
+            }
+
+            .service-name {
+                font-size: 1.1em;
+                width: auto;
+            }
+
+            .stars-container {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .star {
+                font-size: 1.5em;
+            }
+
+            .average-rating {
+                width: auto;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 VIDEOTEST</h1>
+            <p>Сравнение видеохостингов для встраивания</p>
+        </header>
+
+        <!-- Слайдер -->
+        <div class="video-slider-container">
+            <div class="video-slider">
+                <!-- GitHub Pages -->
+                <div class="video-slide active">
+                    <video controls>
+                        <source src="https://va0kean.github.io/my-first-website/video/v%20beren%20live.mp4" type="video/mp4">
+                        Ваш браузер не поддерживает видео.
+                    </video>
+                </div>
+
+                <!-- Dropbox -->
+                <div class="video-slide">
+                    <video controls>
+                        <source src="https://www.dropbox.com/scl/fi/jd8ggrgo7dicogxkt3r62/V-Beautiful-Boys.mp4?rlkey=bjzgaa7bnp92rux3wrj0dvjjl&raw=1" type="video/mp4">
+                        Ваш браузер не поддерживает видео.
+                    </video>
+                </div>
+
+                <!-- Yandex Disk -->
+                <div class="video-slide">
+                    <iframe src="https://disk.yandex.kz/i/vPY9w6gQxphy1Q" allowfullscreen></iframe>
+                </div>
+
+                <!-- Sber Disk -->
+                <div class="video-slide">
+                    <iframe src="https://files.sberdisk.ru/s/6nHQZbnzcGm3LhZ" allowfullscreen></iframe>
+                </div>
+
+                <div class="slider-controls">
+                    <button class="slider-btn" id="prevBtn">‹</button>
+                    <button class="slider-btn" id="nextBtn">›</button>
+                </div>
+            </div>
+
+            <!-- Миниатюры -->
+            <div class="video-thumbnails" id="thumbnailsContainer">
+                <div class="thumbnail active" data-index="0">
+                    <div class="thumbnail-video">
+                        <video muted>
+                            <source src="https://va0kean.github.io/my-first-website/video/v%20beren%20live.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="thumbnail-label">GitHub</div>
+                </div>
+
+                <div class="thumbnail" data-index="1">
+                    <div class="thumbnail-video">
+                        <video muted>
+                            <source src="https://www.dropbox.com/scl/fi/jd8ggrgo7dicogxkt3r62/V-Beautiful-Boys.mp4?rlkey=bjzgaa7bnp92rux3wrj0dvjjl&raw=1" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="thumbnail-label">DropBox</div>
+                </div>
+
+                <div class="thumbnail" data-index="2">
+                    <div class="thumbnail-video" style="background: linear-gradient(135deg, #ffcc00 0%, #ff6b00 100%); color: white; font-size: 1.5em; font-weight: bold;">
+                        Я
+                    </div>
+                    <div class="thumbnail-label">Яндекс</div>
+                </div>
+
+                <div class="thumbnail" data-index="3">
+                    <div class="thumbnail-video" style="background: linear-gradient(135deg, #21a038 0%, #14692a 100%); color: white; font-size: 1.5em; font-weight: bold;">
+                        С
+                    </div>
+                    <div class="thumbnail-label">Сбер</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Таблица оценок -->
+        <div class="rating-section">
+            <h2>⭐ Оценки сервисов</h2>
+            <table class="rating-table">
+                <tr class="rating-row">
+                    <td class="service-name">GitHub</td>
+                    <td class="stars-container" data-service="github">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </td>
+                    <td class="average-rating" id="avg-github">0/5</td>
+                </tr>
+                <tr class="rating-row">
+                    <td class="service-name">DropBox</td>
+                    <td class="stars-container" data-service="dropbox">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </td>
+                    <td class="average-rating" id="avg-dropbox">0/5</td>
+                </tr>
+                <tr class="rating-row">
+                    <td class="service-name">Яндекс</td>
+                    <td class="stars-container" data-service="yandex">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </td>
+                    <td class="average-rating" id="avg-yandex">0/5</td>
+                </tr>
+                <tr class="rating-row">
+                    <td class="service-name">Сбер</td>
+                    <td class="stars-container" data-service="sber">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </td>
+                    <td class="average-rating" id="avg-sber">0/5</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Слайдер
+        const slides = document.querySelectorAll('.video-slide');
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        let currentSlide = 0;
+
+        function pauseAllVideos() {
+            slides.forEach(slide => {
+                const video = slide.querySelector('video');
+                if (video) {
+                    video.pause();
+                    video.currentTime = 0;
+                }
+            });
+        }
+
+        function updateSlider() {
+            pauseAllVideos();
+            
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                thumbnails[index].classList.remove('active');
+            });
+            
+            slides[currentSlide].classList.add('active');
+            thumbnails[currentSlide].classList.add('active');
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            updateSlider();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            updateSlider();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlider();
+        }
+
+        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlide);
+
+        thumbnails.forEach((thumbnail, index) => {
+            thumbnail.addEventListener('click', () => goToSlide(index));
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // Система оценок
+        const ratings = {
+            github: 0,
+            dropbox: 0,
+            yandex: 0,
+            sber: 0
+        };
+
+        document.querySelectorAll('.stars-container').forEach(container => {
+            const service = container.dataset.service;
+            const stars = container.querySelectorAll('.star');
+            
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const rating = parseInt(this.dataset.rating);
+                    ratings[service] = rating;
+                    
+                    // Обновляем звезды
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.classList.add('active');
+                        } else {
+                            s.classList.remove('active');
+                        }
+                    });
+                    
+                    // Обновляем средний балл
+                    document.getElementById(`avg-${service}`).textContent = `${rating}/5`;
+                });
+                
+                // Hover эффект
+                star.addEventListener('mouseenter', function() {
+                    const rating = parseInt(this.dataset.rating);
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.style.color = '#ffd700';
+                        } else {
+                            s.style.color = '#ddd';
+                        }
+                    });
+                });
+                
+                container.addEventListener('mouseleave', function() {
+                    const currentRating = ratings[service];
+                    stars.forEach((s, index) => {
+                        if (index < currentRating) {
+                            s.style.color = '#ffd700';
+                        } else {
+                            s.style.color = '#ddd';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
