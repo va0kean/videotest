@@ -41,6 +41,20 @@
             opacity: 0.9;
         }
 
+        .notice {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .notice strong {
+            color: #ffd700;
+        }
+
         /* Слайдер */
         .video-slider-container {
             background: white;
@@ -299,23 +313,24 @@
             <p>Сравнение видеохостингов для встраивания</p>
         </header>
 
+        <div class="notice">
+            <strong>⚠️ Примечание:</strong> Если видео не загружается, проверьте что файл загружен в ваш GitHub репозиторий по пути: <code>/video/v beren live.mp4</code>
+        </div>
+
         <!-- Слайдер -->
         <div class="video-slider-container">
             <div class="video-slider">
-                <!-- GitHub Pages -->
+                <!-- GitHub Pages - Локальный файл -->
                 <div class="video-slide active">
-                    <video controls>
-                        <source src="https://va0kean.github.io/my-first-website/video/v%20beren%20live.mp4" type="video/mp4">
+                    <video controls preload="metadata">
+                        <source src="video/v beren live.mp4" type="video/mp4">
                         Ваш браузер не поддерживает видео.
                     </video>
                 </div>
 
-                <!-- Dropbox -->
+                <!-- YouTube пример -->
                 <div class="video-slide">
-                    <video controls>
-                        <source src="https://www.dropbox.com/scl/fi/jd8ggrgo7dicogxkt3r62/V-Beautiful-Boys.mp4?e=1" type="video/mp4">
-                        Ваш браузер не поддерживает видео.
-                    </video>
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                 </div>
 
                 <!-- Yandex Disk -->
@@ -323,9 +338,9 @@
                     <iframe src="https://disk.yandex.kz/i/vPY9w6gQxphy1Q" allowfullscreen></iframe>
                 </div>
 
-                <!-- Sber Disk -->
+                <!-- Mail.ru Cloud -->
                 <div class="video-slide">
-                    <iframe src="https://files.sberdisk.ru/s/6nHQZbnzcGm3LhZ" allowfullscreen></iframe>
+                    <iframe src="https://my.mail.ru/video/embed/140939033990660166" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                 </div>
 
                 <div class="slider-controls">
@@ -337,35 +352,31 @@
             <!-- Миниатюры -->
             <div class="video-thumbnails" id="thumbnailsContainer">
                 <div class="thumbnail active" data-index="0">
-                    <div class="thumbnail-video">
-                        <video muted>
-                            <source src="https://va0kean.github.io/my-first-website/video/v%20beren%20live.mp4" type="video/mp4">
-                        </video>
+                    <div class="thumbnail-video" style="background: linear-gradient(135deg, #24292e 0%, #000 100%); color: white; font-size: 2em; font-weight: bold;">
+                        🐙
                     </div>
                     <div class="thumbnail-label">GitHub</div>
                 </div>
 
                 <div class="thumbnail" data-index="1">
-                    <div class="thumbnail-video">
-                        <video muted>
-                            <source src="https://www.dropbox.com/scl/fi/jd8ggrgo7dicogxkt3r62/V-Beautiful-Boys.mp4?rlkey=bjzgaa7bnp92rux3wrj0dvjjl&raw=1" type="video/mp4">
-                        </video>
+                    <div class="thumbnail-video" style="background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%); color: white; font-size: 2em; font-weight: bold;">
+                        ▶
                     </div>
-                    <div class="thumbnail-label">DropBox</div>
+                    <div class="thumbnail-label">YouTube</div>
                 </div>
 
                 <div class="thumbnail" data-index="2">
-                    <div class="thumbnail-video" style="background: linear-gradient(135deg, #ffcc00 0%, #ff6b00 100%); color: white; font-size: 1.5em; font-weight: bold;">
+                    <div class="thumbnail-video" style="background: linear-gradient(135deg, #ffcc00 0%, #ff6b00 100%); color: white; font-size: 2em; font-weight: bold;">
                         Я
                     </div>
                     <div class="thumbnail-label">Яндекс</div>
                 </div>
 
                 <div class="thumbnail" data-index="3">
-                    <div class="thumbnail-video" style="background: linear-gradient(135deg, #21a038 0%, #14692a 100%); color: white; font-size: 1.5em; font-weight: bold;">
-                        С
+                    <div class="thumbnail-video" style="background: linear-gradient(135deg, #005ff9 0%, #0047ba 100%); color: white; font-size: 2em; font-weight: bold;">
+                        @
                     </div>
-                    <div class="thumbnail-label">Сбер</div>
+                    <div class="thumbnail-label">Mail.ru</div>
                 </div>
             </div>
         </div>
@@ -386,15 +397,15 @@
                     <td class="average-rating" id="avg-github">0/5</td>
                 </tr>
                 <tr class="rating-row">
-                    <td class="service-name">DropBox</td>
-                    <td class="stars-container" data-service="dropbox">
+                    <td class="service-name">YouTube</td>
+                    <td class="stars-container" data-service="youtube">
                         <span class="star" data-rating="1">★</span>
                         <span class="star" data-rating="2">★</span>
                         <span class="star" data-rating="3">★</span>
                         <span class="star" data-rating="4">★</span>
                         <span class="star" data-rating="5">★</span>
                     </td>
-                    <td class="average-rating" id="avg-dropbox">0/5</td>
+                    <td class="average-rating" id="avg-youtube">0/5</td>
                 </tr>
                 <tr class="rating-row">
                     <td class="service-name">Яндекс</td>
@@ -408,15 +419,15 @@
                     <td class="average-rating" id="avg-yandex">0/5</td>
                 </tr>
                 <tr class="rating-row">
-                    <td class="service-name">Сбер</td>
-                    <td class="stars-container" data-service="sber">
+                    <td class="service-name">Mail.ru</td>
+                    <td class="stars-container" data-service="mailru">
                         <span class="star" data-rating="1">★</span>
                         <span class="star" data-rating="2">★</span>
                         <span class="star" data-rating="3">★</span>
                         <span class="star" data-rating="4">★</span>
                         <span class="star" data-rating="5">★</span>
                     </td>
-                    <td class="average-rating" id="avg-sber">0/5</td>
+                    <td class="average-rating" id="avg-mailru">0/5</td>
                 </tr>
             </table>
         </div>
@@ -435,7 +446,11 @@
                 const video = slide.querySelector('video');
                 if (video) {
                     video.pause();
-                    video.currentTime = 0;
+                }
+                const iframe = slide.querySelector('iframe');
+                if (iframe) {
+                    const src = iframe.src;
+                    iframe.src = src;
                 }
             });
         }
@@ -482,9 +497,9 @@
         // Система оценок
         const ratings = {
             github: 0,
-            dropbox: 0,
+            youtube: 0,
             yandex: 0,
-            sber: 0
+            mailru: 0
         };
 
         document.querySelectorAll('.stars-container').forEach(container => {
